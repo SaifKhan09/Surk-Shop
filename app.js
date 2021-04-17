@@ -31,6 +31,7 @@ app.use(
       "default-src": ["'self'", "'unsafe-inline'"],
       "script-src": ["'self'", "https://js.stripe.com/v3/","'unsafe-inline'"],
       "object-src": ["'none'"],
+      "frame-src" : ["https://js.stripe.com/v3/"]
     },
   })
 );
