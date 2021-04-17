@@ -32,6 +32,7 @@ app.use(
       "script-src": ["'self'", "https://js.stripe.com/v3/","'unsafe-inline'"],
       "object-src": ["'none'"],
       "frame-src" : ["https://js.stripe.com/v3/"]
+      // "style-src" : ["'self'","https://fonts.googleapis.com/css?family=Open+Sans:400,700"]
     },
   })
 );
