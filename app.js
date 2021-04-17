@@ -29,7 +29,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       "default-src": ["'self'", "'unsafe-inline'"],
-      "script-src": ["'self'", "https://js.stripe.com/v3/"],
+      "script-src": ["'self'", "https://js.stripe.com/v3/","'unsafe-inline'"],
       "object-src": ["'none'"],
     },
   })
