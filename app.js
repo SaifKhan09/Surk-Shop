@@ -17,7 +17,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.aadz6.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?`;
+  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.aadz6.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -26,9 +26,9 @@ const store = new MongoDBStore({
 });
 const csrfProtection = csrf();
 
-app.use((req,res,next)=>{
-  res.set("Content-Security-Policy", "default-src 'self' 'https://js.stripe.com/v3/' ");
-});
+// app.use((req,res,next)=>{
+//   res.set("Content-Security-Policy", "default-src 'self' 'https://js.stripe.com/v3/' ");
+// });
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -60,7 +60,17 @@ const authRoutes = require('./routes/auth');
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'),{flags:'a'});
 
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "default-src": ["'self'", "'unsafe-inline'"],
+      "script-src": ["'self'", "https://js.stripe.com/v3/","'unsafe-inline'"],
+      "object-src": ["'none'"],
+      "frame-src" : ["https://js.stripe.com/v3/"]
+      // "style-src" : ["'self'","https://fonts.googleapis.com/css?family=Open+Sans:400,700"]
+    },
+  })
+);
 app.use(compression());
 app.use(morgan('combined',{stream:accessLogStream}));
 
@@ -127,8 +137,6 @@ mongoose
   .connect(MONGODB_URI,{useUnifiedTopology:true , useNewUrlParser:true})
   .then(result => {
     app.listen(process.env.PORT || 3000);
-  })
-  .then(res=>{
     console.log("Connected!");
   })
   .catch(err => {
